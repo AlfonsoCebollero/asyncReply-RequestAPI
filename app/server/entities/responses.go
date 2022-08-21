@@ -15,7 +15,7 @@ type WFRetrievingSuccessfulResponse struct {
 }
 
 type ErrorResponse struct {
-	StatusCode int    `json:"status-code"`
+	StatusCode string `json:"status-code"`
 	Message    string `json:"message"`
 }
 

@@ -10,6 +10,16 @@ import (
 	"go.uber.org/zap"
 )
 
+// @title       Async Reply-Request API
+// @version     1.0
+// @description Async Reply-Request API with cadence and gin-gonic
+
+// @contact.name  Alfonso Cebollero
+// @contact.email alfonso.cebollero.acm@gmail.com
+
+// @host     localhost:8080
+// @BasePath /api/v1
+
 var (
 	appConfig     = config.AppConfig
 	cadenceClient = cadence.CadenceAdapter
