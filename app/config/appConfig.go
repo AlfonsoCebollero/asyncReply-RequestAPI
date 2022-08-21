@@ -12,10 +12,11 @@ var (
 )
 
 type CadenceConfig struct {
-	Domain    string            `yaml:"domain"`
-	Service   string            `yaml:"service"`
-	HostPort  string            `yaml:"hostPort"`
-	Workflows map[string]string `yaml:"workflows"`
+	Domain        string            `yaml:"domain"`
+	Service       string            `yaml:"service"`
+	HostPort      string            `yaml:"hostPort"`
+	Workflows     map[string]string `yaml:"workflows"`
+	ServerBaseUrl string            `yaml:"serverBaseUrl"`
 }
 
 type Config struct {
