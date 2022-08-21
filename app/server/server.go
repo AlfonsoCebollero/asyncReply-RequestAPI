@@ -129,8 +129,8 @@ func retrieveStatus(c *gin.Context) {
 
 // LoadRoutesAndMiddlewares sets all routes and middlewares selected to run within the API
 func LoadRoutesAndMiddlewares() {
-	Server.POST("/api/v1/workflow/:name", createWorkflow)
-	Server.GET("/api/v1/workflow/:id", retrieveStatus)
+	Server.POST(fmt.Sprintf(workflowAPIBaseRoute, ":name"), createWorkflow)
+	Server.GET(fmt.Sprintf(workflowAPIBaseRoute, ":id"), retrieveStatus)
 	Logger.Info("Routes and middlewares successfully loaded")
 }
 
