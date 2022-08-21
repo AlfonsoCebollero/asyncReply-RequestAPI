@@ -1,0 +1,129 @@
+basePath: /api/v1
+definitions:
+  entities.APIError:
+    properties:
+      response:
+        $ref: '#/definitions/entities.ErrorResponse'
+      timestamp:
+        type: string
+    type: object
+  entities.APIResponse:
+    properties:
+      Response: {}
+      timestamp:
+        type: string
+    type: object
+  entities.ErrorResponse:
+    properties:
+      message:
+        type: string
+      status-code:
+        type: string
+    type: object
+  entities.WFCreationSuccessfulResponse:
+    properties:
+      href:
+        type: string
+      message:
+        type: string
+      status-code:
+        type: string
+      workflow-id:
+        type: string
+      workflow-run-id:
+        type: string
+      workflow-status:
+        type: string
+    type: object
+  entities.WFRetrievingSuccessfulResponse:
+    properties:
+      status-code:
+        type: string
+      workflow-status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: alfonso.cebollero.acm@gmail.com
+    name: Alfonso Cebollero
+  description: Async Reply-Request API with cadence and gin-gonic
+  title: Async Reply-Request API
+  version: "1.0"
+paths:
+  /workflow/{workflowName}:
+    post:
+      description: Receives a path param name, a query duration and, optionally, a
+        query param task list name. With these a new workflow of the type that matches
+        the name is created with the requested duration
+      parameters:
+      - description: Workflow Name
+        in: path
+        name: workflowName
+        required: true
+        type: string
+      - description: Duration
+        in: query
+        name: duration
+        required: true
+        type: integer
+      - description: Task list name
+        in: query
+        name: taskListName
+        type: string
+      produces:
+      - application/json
+      responses:
+        "220":
+          description: ""
+          schema:
+            allOf:
+            - $ref: '#/definitions/entities.APIResponse'
+            - properties:
+                response:
+                  $ref: '#/definitions/entities.WFCreationSuccessfulResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.APIError'
+      summary: Creates new workflow if params are valid
+      tags:
+      - WFCreation
+  /workflow/status/{workflowID}:
+    get:
+      description: Responds with the status of the searched workflow
+      parameters:
+      - description: Workflow ID
+        in: path
+        name: workflowID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/entities.APIResponse'
+            - properties:
+                response:
+                  $ref: '#/definitions/entities.WFRetrievingSuccessfulResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.APIError'
+      summary: Retrieves status of the workflow associated to the given ID
+      tags:
+      - WFStatusRetrieving
+swagger: "2.0"
