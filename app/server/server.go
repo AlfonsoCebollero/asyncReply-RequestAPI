@@ -71,12 +71,13 @@ func createWorkflow(c *gin.Context) {
 
 	c.JSON(http.StatusAccepted, entities.APIResponse{
 		Timestamp: time.Now().String(),
-		Response: entities.SuccessfulResponse{
+		Response: entities.WFCreationSuccessfulResponse{
 			WorkflowID:     execution.ID,
 			WorkflowRunID:  execution.RunID,
 			WorkflowStatus: "Created",
 			Message:        "Workflow was created succesfully",
 			StatusCode:     "ACCEPTED",
+			Href:           config.AppConfig.Cadence.ServerBaseUrl + fmt.Sprintf(workflowAPIBaseRoute, execution.ID),
 		},
 	})
 
