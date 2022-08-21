@@ -1,10 +1,16 @@
 package entities
 
-type SuccessfulResponse struct {
+type WFCreationSuccessfulResponse struct {
 	WorkflowID     string `json:"workflow-id"`
 	WorkflowRunID  string `json:"workflow-run-id"`
 	WorkflowStatus string `json:"workflow-status"`
 	Message        string `json:"message"`
+	StatusCode     string `json:"status-code"`
+	Href           string `json:"href"`
+}
+
+type WFRetrievingSuccessfulResponse struct {
+	WorkflowStatus string `json:"workflow-status"`
 	StatusCode     string `json:"status-code"`
 }
 
@@ -14,8 +20,8 @@ type ErrorResponse struct {
 }
 
 type APIResponse struct {
-	Timestamp string             `json:"timestamp"`
-	Response  SuccessfulResponse `json:"Response"`
+	Timestamp string      `json:"timestamp"`
+	Response  interface{} `json:"Response"`
 }
 
 type APIError struct {
