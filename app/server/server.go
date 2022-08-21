@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/cadence/.gen/go/shared"
 	"go.uber.org/cadence/client"
 	"go.uber.org/zap"
 	"net/http"
