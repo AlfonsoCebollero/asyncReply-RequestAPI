@@ -86,7 +86,45 @@ func createWorkflow(c *gin.Context) {
 // retrieveStatus Retrieves the status of the workflow which ID is passed as a path param.
 func retrieveStatus(c *gin.Context) {
 	workflowID := c.Param("id")
-	Logger.Info("Retrieving workflow status...", zap.String("workflow-id", workflowID))
+	Logger.Info("Retrieving workflow closeStatus...", zap.String("workflow-id", workflowID))
+
+	workflowExecution, err := cadenceAdapter.CadenceClient.DescribeWorkflowExecution(context.Background(), workflowID, "")
+	if err != nil {
+		c.JSON(http.StatusNotFound, err)
+		return
+	}
+
+	closeStatus := workflowExecution.WorkflowExecutionInfo.CloseStatus
+
+	var status string
+
+	if closeStatus == nil {
+		if workflowExecution.GetPendingDecision() != nil {
+			status = "PENDING"
+		} else {
+			status = "RUNNING"
+		}
+		c.JSON(http.StatusOK, getWorkflowStatusResponse(status))
+		return
+	}
+
+	switch *workflowExecution.WorkflowExecutionInfo.CloseStatus {
+	case shared.WorkflowExecutionCloseStatusCompleted:
+		status = "COMPLETED"
+	case shared.WorkflowExecutionCloseStatusCanceled:
+		status = "CANCELED"
+	case shared.WorkflowExecutionCloseStatusFailed:
+		status = "FAILED"
+	case shared.WorkflowExecutionCloseStatusTerminated:
+		status = "TERMINATED"
+	default:
+		status = "COMPLETED"
+
+	}
+
+	c.JSON(http.StatusOK, getWorkflowStatusResponse(status))
+	return
+
 }
 
 // LoadRoutesAndMiddlewares sets all routes and middlewares selected to run within the API
@@ -114,6 +152,16 @@ func getWorkflowCreationError(err error) entities.APIError {
 		Response: entities.ErrorResponse{
 			StatusCode: http.StatusInternalServerError,
 			Message:    fmt.Sprintf("There was an error while creating the workflow: %v", err),
+		},
+	}
+}
+
+func getWorkflowStatusResponse(status string) entities.APIResponse {
+	return entities.APIResponse{
+		Timestamp: time.Now().String(),
+		Response: entities.WFRetrievingSuccessfulResponse{
+			WorkflowStatus: status,
+			StatusCode:     "OK",
 		},
 	}
 }
