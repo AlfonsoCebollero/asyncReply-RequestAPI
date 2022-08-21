@@ -14,7 +14,8 @@ import (
 )
 
 const (
-	wfPrefix = "OWTAssignment/app/worker/workflows.%s"
+	wfPrefix             = "OWTAssignment/app/worker/workflows.%s"
+	workflowAPIBaseRoute = "/api/v1/workflow/%s"
 )
 
 var (
