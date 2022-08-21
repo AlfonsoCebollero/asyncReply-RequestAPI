@@ -5,13 +5,12 @@ import (
 	"OWTAssignment/app/config"
 	_ "OWTAssignment/app/docs"
 	"OWTAssignment/app/server/entities"
-	"context"
+	"OWTAssignment/app/useCases"
+	"OWTAssignment/app/useCases/wfManager"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"go.uber.org/cadence/.gen/go/shared"
-	"go.uber.org/cadence/client"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
@@ -28,6 +27,11 @@ var (
 	Server       = gin.Default()
 	Logger       *zap.Logger
 	LogConfigRef **zap.Logger
+
+	cadenceWFManager = wfManager.CadenceWFManager{
+		CadenceClient: &cadenceAdapter.CadenceClient,
+		WFPrefix:      wfPrefix,
+	}
 )
 
 func init() {
@@ -48,54 +52,46 @@ func init() {
 // @Param       taskListName query    string false "Task list name"
 // @Router      /workflow/{workflowName} [post]
 func createWorkflow(c *gin.Context) {
-	Logger.Info("Validating request...")
-	wfs := config.AppConfig.Cadence.Workflows
-	taskListName, name, duration, err := workflowCreationRequestValidation(c, wfs)
-	if err != nil {
-		switch err {
-		case entities.ValidationError:
-			message := "A duration >= 30 must be supplied"
-			c.JSON(http.StatusBadRequest, getValidationErrorResponse(message))
-			return
-		case entities.BadWorkflow:
-			message := fmt.Sprintf("%s is not a valid workflow name, available options: %v",
-				name, wfs)
-			c.JSON(http.StatusBadRequest, getValidationErrorResponse(message))
-			return
-		}
+	queryParams := c.Request.URL.Query()
+	duration := queryParams.Get("duration")
+	taskListName := queryParams.Get("taskList")
 
-	}
-	Logger.Info("Request validated!")
+	executionID, executionRunID, err := useCases.CreateWorkflow(
+		&cadenceWFManager,
+		taskListName,
+		duration,
+		c.Param("name"),
+	)
 
-	wo := client.StartWorkflowOptions{
-		TaskList:                     taskListName,
-		ExecutionStartToCloseTimeout: time.Hour * 12,
-	}
-
-	execution, err := cadenceAdapter.CadenceClient.StartWorkflow(
-		context.Background(),
-		wo,
-		fmt.Sprintf(wfPrefix, name),
-		duration)
-	if err != nil {
+	switch err {
+	case nil:
+		c.JSON(http.StatusAccepted, entities.APIResponse{
+			Timestamp: time.Now().String(),
+			Response: entities.WFCreationSuccessfulResponse{
+				WorkflowID:     executionID,
+				WorkflowRunID:  executionRunID,
+				WorkflowStatus: "Created",
+				Message:        "Workflow was created successfully",
+				StatusCode:     "ACCEPTED",
+				Href: config.AppConfig.Cadence.ServerBaseUrl +
+					fmt.Sprintf(workflowAPIBaseRoute, "status/"+executionID),
+			},
+		})
+		return
+	case entities.ValidationError:
+		message := "A duration >= 30 must be supplied"
+		c.JSON(http.StatusBadRequest, getValidationErrorResponse(message))
+		return
+	case entities.BadWorkflow:
+		message := fmt.Sprintf("%s is not a valid workflow name, available options: %v",
+			c.Param("name"), config.AppConfig.Cadence.Workflows)
+		c.JSON(http.StatusInternalServerError, getValidationErrorResponse(message))
+		return
+	default:
 		c.JSON(http.StatusInternalServerError, getWorkflowCreationError(err))
 		return
-	}
-	Logger.Info("Started work flow!",
-		zap.String("WorkflowId", execution.ID),
-		zap.String("RunId", execution.RunID))
 
-	c.JSON(http.StatusAccepted, entities.APIResponse{
-		Timestamp: time.Now().String(),
-		Response: entities.WFCreationSuccessfulResponse{
-			WorkflowID:     execution.ID,
-			WorkflowRunID:  execution.RunID,
-			WorkflowStatus: "Created",
-			Message:        "Workflow was created successfully",
-			StatusCode:     "ACCEPTED",
-			Href:           config.AppConfig.Cadence.ServerBaseUrl + fmt.Sprintf(workflowAPIBaseRoute, execution.ID),
-		},
-	})
+	}
 
 }
 
@@ -112,40 +108,11 @@ func createWorkflow(c *gin.Context) {
 // @Router      /workflow/status/{workflowID} [get]
 func retrieveStatus(c *gin.Context) {
 	workflowID := c.Param("id")
-	Logger.Info("Retrieving workflow closeStatus...", zap.String("workflow-id", workflowID))
+	status, err := useCases.RetrieveWorkflowStatus(&cadenceWFManager, workflowID)
 
-	workflowExecution, err := cadenceAdapter.CadenceClient.DescribeWorkflowExecution(context.Background(), workflowID, "")
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 		return
-	}
-
-	closeStatus := workflowExecution.WorkflowExecutionInfo.CloseStatus
-
-	var status string
-
-	if closeStatus == nil {
-		if workflowExecution.GetPendingDecision() != nil {
-			status = "PENDING"
-		} else {
-			status = "RUNNING"
-		}
-		c.JSON(http.StatusOK, getWorkflowStatusResponse(status))
-		return
-	}
-
-	switch *workflowExecution.WorkflowExecutionInfo.CloseStatus {
-	case shared.WorkflowExecutionCloseStatusCompleted:
-		status = "COMPLETED"
-	case shared.WorkflowExecutionCloseStatusCanceled:
-		status = "CANCELED"
-	case shared.WorkflowExecutionCloseStatusFailed:
-		status = "FAILED"
-	case shared.WorkflowExecutionCloseStatusTerminated:
-		status = "TERMINATED"
-	default:
-		status = "COMPLETED"
-
 	}
 
 	c.JSON(http.StatusOK, getWorkflowStatusResponse(status))
@@ -185,6 +152,7 @@ func getWorkflowCreationError(err error) entities.APIError {
 	}
 }
 
+// getWorkflowStatusResponse conforms the response when a workflow retrieving operation completes successfully
 func getWorkflowStatusResponse(status string) entities.APIResponse {
 	return entities.APIResponse{
 		Timestamp: time.Now().String(),
