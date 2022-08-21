@@ -3,6 +3,7 @@ cadence:
   domain: "test-domain"
   service: "cadence-frontend"
   hostPort: "127.0.0.1:7933"
+  serverBaseURL: "http://localhost:8080"
   workflows:
     waitingwf: "WaitingWorkflow"
 
