@@ -38,17 +38,19 @@ func startWorkers(h *cadence.Adapter, taskList string) {
 	}
 }
 
-func startServer(c context.Context) {
+func startServer(c context.Context, cancelCtx func()) {
 	if err := server.Server.Run("0.0.0.0:8080"); err != nil {
 		logger.Error("Could not start server")
 		logger.Panic("Cancelling server thread")
-		c.Done()
+		cancelCtx()
+
 	}
 
 }
 
 func main() {
 	serverCtx := context.Background()
+	serverCtx, cancelServerCtx := context.WithCancel(serverCtx)
 
 	logger.Info("Configurations successfully loaded")
 	logger.Info("Starting worker...")
@@ -58,7 +60,7 @@ func main() {
 
 	server.LoadRoutesAndMiddlewares()
 
-	go startServer(serverCtx)
+	go startServer(serverCtx, cancelServerCtx)
 
 	select {
 	case <-serverCtx.Done():
