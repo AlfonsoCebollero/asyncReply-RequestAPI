@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"OWTAssignment/app/server/entities"
-	"OWTAssignment/app/useCases"
 	"errors"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/server/entities"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/useCases"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"

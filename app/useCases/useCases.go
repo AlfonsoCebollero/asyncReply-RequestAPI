@@ -1,8 +1,8 @@
 package useCases
 
 import (
-	"OWTAssignment/app/config"
-	"OWTAssignment/app/useCases/interfaces"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/config"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/useCases/interfaces"
 	"go.uber.org/zap"
 )
 

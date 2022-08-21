@@ -1,11 +1,11 @@
 package main
 
 import (
-	"OWTAssignment/app/adapters/cadence"
-	"OWTAssignment/app/config"
-	"OWTAssignment/app/server"
-	"OWTAssignment/app/worker/workflows"
 	"context"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/adapters/cadence"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/config"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/server"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/worker/workflows"
 	"go.uber.org/cadence/worker"
 	"go.uber.org/zap"
 )

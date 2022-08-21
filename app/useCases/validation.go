@@ -1,9 +1,9 @@
 package useCases
 
 import (
-	"OWTAssignment/app/config"
-	"OWTAssignment/app/server/entities"
-	"OWTAssignment/app/worker/workflows"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/config"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/server/entities"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/worker/workflows"
 	"go.uber.org/zap"
 	"strconv"
 	"strings"

@@ -1,9 +1,9 @@
 package wfManager
 
 import (
-	"OWTAssignment/app/config"
 	"context"
 	"fmt"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/config"
 	"go.uber.org/cadence/client"
 	"go.uber.org/zap"
 	"time"

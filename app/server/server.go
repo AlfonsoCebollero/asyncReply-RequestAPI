@@ -1,13 +1,13 @@
 package server
 
 import (
-	"OWTAssignment/app/adapters/cadence"
-	"OWTAssignment/app/config"
-	_ "OWTAssignment/app/docs"
-	"OWTAssignment/app/server/entities"
-	"OWTAssignment/app/useCases"
-	"OWTAssignment/app/useCases/wfManager"
 	"fmt"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/adapters/cadence"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/config"
+	_ "github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/docs"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/server/entities"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/useCases"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/useCases/wfManager"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	wfPrefix             = "OWTAssignment/app/worker/workflows.%s"
+	wfPrefix             = "github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/worker/workflows.%s"
 	workflowAPIBaseRoute = "/api/v1/workflow/%s"
 )
 

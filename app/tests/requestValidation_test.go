@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"OWTAssignment/app/config"
-	"OWTAssignment/app/useCases"
 	"fmt"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/config"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/useCases"
 	"os"
 	"path"
 	"testing"

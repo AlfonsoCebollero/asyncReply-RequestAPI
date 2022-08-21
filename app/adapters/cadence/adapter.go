@@ -1,8 +1,8 @@
 package cadence
 
 import (
-	"OWTAssignment/app/config"
 	"context"
+	"github.com/AlfonsoCebollero/asyncReply-RequestAPI/app/config"
 	"github.com/uber-go/tally"
 	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
 	"go.uber.org/cadence/client"
