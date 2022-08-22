@@ -7,6 +7,20 @@ This set up does not provide persintance when stopped, but it can be easily adde
 
 I have inspired myself from this [medium post](https://medium.com/stashaway-engineering/building-your-first-cadence-workflow-e61a0b29785) to implement the cadence structure.
 
+## Configuration file
+Inside resources folder, a configuration file can be found with the following content:
+```
+env: "development"
+cadence:
+  domain: "test-domain"
+  service: "cadence-frontend"
+  hostPort: "host.docker.internal:7933"
+  serverBaseURL: "http://localhost:8080"
+  workflows:
+    waitingwf: "WaitingWorkflow"
+
+```
+
 
 ## Workflows
 The implemented worker only counts with one workflow, which is designed to simulate long async tasks that are in charge of the worker.
