@@ -105,8 +105,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "220": {
-                        "description": "",
+                    "202": {
+                        "description": "Accepted",
                         "schema": {
                             "allOf": [
                                 {

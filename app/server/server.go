@@ -44,7 +44,7 @@ func init() {
 // @Description Receives a path param name, a query duration and, optionally, a query param task list name. With these a new workflow of the type that matches the name is created with the requested duration
 // @Tags        WFCreation
 // @Produce     json
-// @Success     220          {object} entities.APIResponse{response=entities.WFCreationSuccessfulResponse}
+// @Success     202          {object} entities.APIResponse{response=entities.WFCreationSuccessfulResponse}
 // @Failure     400          {object} entities.APIError{}
 // @Failure     500          {object} entities.APIError{}
 // @Param       workflowName path     string true  "Workflow Name"
