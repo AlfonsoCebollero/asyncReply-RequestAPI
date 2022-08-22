@@ -102,7 +102,7 @@ func createWorkflow(c *gin.Context) {
 // @Tags        WFStatusRetrieving
 // @Produce     json
 // @Success     200          {object} entities.APIResponse{response=entities.WFRetrievingSuccessfulResponse}
-// @Failure     400          {object} entities.APIError{}
+// @Failure     404          {object} entities.APIError{}
 // @Failure     500          {object} entities.APIError{}
 // @Param       workflowID path     string true  "Workflow ID"
 // @Router      /workflow/status/{workflowID} [get]

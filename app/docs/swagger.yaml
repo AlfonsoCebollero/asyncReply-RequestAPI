@@ -115,8 +115,8 @@ paths:
                 response:
                   $ref: '#/definitions/entities.WFRetrievingSuccessfulResponse'
               type: object
-        "400":
-          description: Bad Request
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/entities.APIError'
         "500":

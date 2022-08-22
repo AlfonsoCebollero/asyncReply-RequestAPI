@@ -57,8 +57,8 @@ const docTemplate = `{
                             ]
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/entities.APIError"
                         }
