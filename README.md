@@ -3,12 +3,13 @@ This project runs a [cadence worker](https://github.com/uber-go/cadence-client) 
 async Reply-Request API.
 
 It is thought to have a local instance of cadence running locally which can be easily accomplished following these [instructions](https://cadenceworkflow.io/docs/get-started/installation/#run-cadence-server-using-docker-compose).
-This set up does not provide persintance when stopped, but it can be easily added by docker volume means.
+This set up does not provide persintance when deleted, but it can be easily added by docker volume means.
 
 I have inspired myself from this [medium post](https://medium.com/stashaway-engineering/building-your-first-cadence-workflow-e61a0b29785) to implement the cadence structure.
 
 ## Configuration file
 Inside resources folder, a configuration file can be found with the following content:
+
 ```
 env: "development"
 cadence:
@@ -20,8 +21,17 @@ cadence:
     waitingwf: "WaitingWorkflow"
 
 ```
+If the app is wanted to be run with docker, no modifications are needed, in case it is run directly with go, the hostPort must be changed to "127.0.0.1:7933". Both options are thought to be deployed in a local environment where a cadence instance is already running.
 
+There is also the **domain** entry, which value can be changed to any other **existing domain** within cadence. The workflows will be created inside this domain.
 
+A workflows map, which contains all the available workflows inside the application, is included, so, when a new workflow is added, this value must be updated as well.
+
+## Run with docker
+```
+>> docker build -t asyncapi . 
+>> docker run -p 8080:8080 -d --name AsyncAPI asyncapi
+```
 ## Workflows
 The implemented worker only counts with one workflow, which is designed to simulate long async tasks that are in charge of the worker.
 When accessing to the local cadence web instance the created workflows can be seen:
