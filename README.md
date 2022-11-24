@@ -5,8 +5,6 @@ async Reply-Request API.
 It is thought to have a local instance of cadence running locally which can be easily accomplished following these [instructions](https://cadenceworkflow.io/docs/get-started/installation/#run-cadence-server-using-docker-compose).
 This set up does not provide persintance when deleted, but it can be easily added by docker volume means.
 
-I have inspired myself from this [medium post](https://medium.com/stashaway-engineering/building-your-first-cadence-workflow-e61a0b29785) to implement the cadence structure.
-
 ## Configuration file
 Inside resources folder, a configuration file can be found with the following content:
 
